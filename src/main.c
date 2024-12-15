@@ -181,7 +181,7 @@ int main(){
 
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
-	Texture2D background = LoadTexture("ressources/9999520.jpg");
+	Texture2D background = LoadTexture("resources/9999520.jpg");
 
 
     generationsMains();
@@ -189,7 +189,7 @@ int main(){
     while (!WindowShouldClose()) {
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        DrawTexture(background, 0, 0, WHITE);
 
         DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes : ");
         DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes : ");
