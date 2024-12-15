@@ -137,16 +137,19 @@ void analyzeMains() {
     else h2Rank = 0;
 
     // Affichage des rangs des mains des joueurs
-    printf("\nLe joueur 1 a %s.\n", rankStrings[h1Rank]);
-    printf("Le joueur 2 a %s.\n", rankStrings[h2Rank]);
+	DrawText(TextFormat("Le joueur 1 a : %s", rankStrings[h1Rank]), 50, 500, 20, BLACK);
+	DrawText(TextFormat("Le joueur 2 a : %s", rankStrings[h2Rank]), 50, 550, 20, BLACK);
 
     // Détermine le gagnant en fonction des rangs des mains des joueurs
-    if (h1Rank > h2Rank)
-        printf("Le joueur 1 a gagné la partie !\n");
-    else if (h2Rank > h1Rank)
-        printf("Le joueur 2 a gagné la partie !\n");
-    else
-        printf("Egalité entre les deux joueurs !\n");
+    if (h1Rank > h2Rank) {
+		DrawText("Le joueur 1 a gagné la partie !", 50, 450, 20, BLACK);
+	}
+    else if (h2Rank > h1Rank) {
+		DrawText("Le joueur 2 a gagné la partie !", 50, 450, 20, BLACK);
+	}
+    else {
+		DrawText("Egalité entre les deux joueurs !", 50, 450, 20, BLACK);
+	}
 }
 
 // Permet de générer les mains des joueurs
@@ -178,26 +181,24 @@ int main(){
 
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
-    // Load textures and fonts if needed
-    // Texture2D cardTexture = LoadTexture("resources/card.png");
+	Texture2D background = LoadTexture("ressources/9999520.jpg");
+
 
     generationsMains();
-    analyzeMains();
 
     while (!WindowShouldClose()) {
 
-        // Draw
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes");
-        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes");
+        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes : ");
+        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes : ");
+
+		analyzeMains();
 
         EndDrawing();
     }
 
-    // De-Initialization
-    // UnloadTexture(cardTexture);
     CloseWindow();
 
     return 0;
