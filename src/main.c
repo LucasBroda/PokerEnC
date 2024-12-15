@@ -47,7 +47,7 @@ const char* faceStringsEnMajPourAfficher[] = {
 	"2", "3", "4", "5", "6", "7", "8", "9", "10", "VALET", "REINE", "ROI", "AS"
 };
 char *rankStrings[] = {
-    "des cartes avec de hautes valeurs","une Paire","deux Paires","trois Paires","Quinte",
+    "des cartes avec de hautes valeurs","une Paire","deux Paires","Triple","Quinte",
     "Flush","Full House","Carré","Quinte Flush"};
 
 // Permet de gérer la distribution des cartes aux deux joueurs
@@ -157,22 +157,27 @@ void analyzeMains() {
     else if (h2Paires == 1) h2Rank = 1;
     else h2Rank = 0;
 
+    int posX = 200;
+	int posY1 = 100;
+    int posY2 = 300;
+    int textPosX = posX + 5 * (CARD_WIDTH + 10) + 20;
+
     // Affichage des rangs des mains des joueurs
-	DrawText(TextFormat("Le joueur 1 a : %s", rankStrings[h1Rank]), 50, 500, 20, BLACK);
-	DrawText(TextFormat("Le joueur 2 a : %s", rankStrings[h2Rank]), 50, 550, 20, BLACK);
+	DrawText(TextFormat("Le joueur 1 a : %s", rankStrings[h1Rank]), textPosX, posY1+100, 20, BLACK);
+	DrawText(TextFormat("Le joueur 2 a : %s", rankStrings[h2Rank]), textPosX, posY2+100, 20, BLACK);
 
     // Détermine le gagnant en fonction des rangs des mains des joueurs
     if (h1Rank > h2Rank) {
 		// Permet d'afficher le joueur gagnant dans la fenêtre
-		DrawText("Le joueur 1 a gagné la partie !", 50, 450, 20, BLACK);
+		DrawText("Le joueur 1 a gagné la partie !", textPosX, posY1+50, 20, BLACK);
 	}
     else if (h2Rank > h1Rank) {
 		// Permet d'afficher le joueur gagnant dans la fenêtre
-		DrawText("Le joueur 2 a gagné la partie !", 50, 450, 20, BLACK);
+		DrawText("Le joueur 2 a gagné la partie !", textPosX, posY1+50, 20, BLACK);
 	}
     else {
 		// Permet d'afficher le joueur gagnant dans la fenêtre
-		DrawText("Egalité entre les deux joueurs !", 50, 450, 20, BLACK);
+		DrawText("Egalité entre les deux joueurs !", textPosX, posY1+50, 20, BLACK);
 	}
 }
 
@@ -211,8 +216,9 @@ void DrawHand(struct Main main, int posX, int posY, const char* player, Texture2
 
 int main(){
     
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+	// Dimensions de la fenêtre
+    const int screenWidth = 1000;
+    const int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
@@ -235,8 +241,8 @@ int main(){
         DrawTexture(background, 0, 0, WHITE);
 
 		// Dessiner les mains des joueurs
-        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes", cardTextures);
-        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes", cardTextures);
+        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes: ", cardTextures);
+        DrawHand(Main2, 50, 400, "Le joueur 2 a les cartes suivantes: ", cardTextures);
 
 		// Analyser les mains des joueurs pour déterminer le gagnant
 		analyzeMains();
