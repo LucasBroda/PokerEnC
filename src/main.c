@@ -157,6 +157,7 @@ void analyzeMains() {
     else if (h2Paires == 1) h2Rank = 1;
     else h2Rank = 0;
 
+	// Variables pour l'affichage des rangs des mains des joueurs, mais aussi des messages pour déterminer le gagnant
     int posX = 200;
 	int posY1 = 100;
     int posY2 = 300;
