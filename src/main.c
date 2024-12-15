@@ -162,9 +162,20 @@ void generationsMains(){
 }
 
 void DrawCard(struct Cartes carte, int posX, int posY) {
+	Texture2D coeur = LoadTexture("resources/Coeur.jpeg");
+	Texture2D carreau = LoadTexture("resources/Carreau.png");
+	Texture2D trefle = LoadTexture("resources/Trefle.png");
+	Texture2D pique = LoadTexture("resources/Pique.png");
     DrawRectangle(posX, posY, 60, 90, LIGHTGRAY);
     DrawText(faceStrings[carte.face], posX + 5, posY + 5, 20, BLACK);
-    DrawText(couleurStrings[carte.couleur], posX + 5, posY + 30, 20, BLACK);
+    Texture2D symbol;
+    switch (carte.couleur) {
+        case 0: symbol = coeur; break;
+        case 1: symbol = carreau; break;
+        case 2: symbol = trefle; break;
+        case 3: symbol = pique; break;
+    }
+    DrawTexture(symbol, posX + 5, posY + 50, WHITE);
 }
 
 void DrawHand(struct Main main, int posX, int posY, const char* player) {
@@ -182,7 +193,10 @@ int main(){
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
 	Texture2D background = LoadTexture("resources/9999520.jpg");
-
+	Texture2D coeur = LoadTexture("coeur.png");
+	Texture2D carreau = LoadTexture("carreau.png");
+	Texture2D trefle = LoadTexture("trefle.png");
+	Texture2D pique = LoadTexture("pique.png");
 
     generationsMains();
 
@@ -199,6 +213,11 @@ int main(){
         EndDrawing();
     }
 
+	UnloadTexture(background);
+	UnloadTexture(coeur);
+	UnloadTexture(carreau);
+	UnloadTexture(trefle);
+	UnloadTexture(pique);
     CloseWindow();
 
     return 0;
