@@ -161,11 +161,7 @@ void generationsMains(){
     }
 }
 
-void DrawCard(struct Cartes carte, int posX, int posY) {
-	Texture2D coeur = LoadTexture("resources/Coeur.jpeg");
-	Texture2D carreau = LoadTexture("resources/Carreau.png");
-	Texture2D trefle = LoadTexture("resources/Trefle.png");
-	Texture2D pique = LoadTexture("resources/Pique.png");
+void DrawCard(struct Cartes carte, int posX, int posY, Texture2D coeur, Texture2D carreau, Texture2D trefle, Texture2D pique) {
     DrawRectangle(posX, posY, 60, 90, LIGHTGRAY);
     DrawText(faceStrings[carte.face], posX + 5, posY + 5, 20, BLACK);
     Texture2D symbol;
@@ -175,13 +171,13 @@ void DrawCard(struct Cartes carte, int posX, int posY) {
         case 2: symbol = trefle; break;
         case 3: symbol = pique; break;
     }
-    DrawTexture(symbol, posX + 5, posY + 50, WHITE);
+    DrawTextureEx(symbol, (Vector2){posX + 5, posY + 50}, 0.0f, 0.5f, WHITE); // Échelle de 0.5
 }
 
-void DrawHand(struct Main main, int posX, int posY, const char* player) {
+void DrawHand(struct Main main, int posX, int posY, const char* player, Texture2D coeur, Texture2D carreau, Texture2D trefle, Texture2D pique) {
     DrawText(player, posX, posY - 20, 20, BLACK);
     for (int i = 0; i < 5; i++) {
-        DrawCard(main.cartes[i], posX + i * 70, posY);
+        DrawCard(main.cartes[i], posX + i * 70, posY, coeur, carreau, trefle, pique);
     }
 }
 
@@ -193,10 +189,10 @@ int main(){
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
 	Texture2D background = LoadTexture("resources/9999520.jpg");
-	Texture2D coeur = LoadTexture("coeur.png");
-	Texture2D carreau = LoadTexture("carreau.png");
-	Texture2D trefle = LoadTexture("trefle.png");
-	Texture2D pique = LoadTexture("pique.png");
+	Texture2D coeur = LoadTexture("resources/Coeur.jpeg");
+	Texture2D carreau = LoadTexture("resources/Carreau.png");
+	Texture2D trefle = LoadTexture("resources/Trefle.png");
+	Texture2D pique = LoadTexture("resources/Pique.png");
 
     generationsMains();
 
@@ -205,8 +201,8 @@ int main(){
         BeginDrawing();
         DrawTexture(background, 0, 0, WHITE);
 
-        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes : ");
-        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes : ");
+        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes", coeur, carreau, trefle, pique);
+        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes", coeur, carreau, trefle, pique);
 
 		analyzeMains();
 
