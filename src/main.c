@@ -181,7 +181,7 @@ void LoadCardTextures(Texture2D cardTextures[13][4]) {
     char filePath[50];
     for (int i = 0; i < 13; i++) {
         for (int j = 0; j < 4; j++) {
-            snprintf(filePath, sizeof(filePath), "resources/%s%s.png", faceStringsEnMajPourAfficher[i], couleurEnMajPourAfficher[j]);
+            snprintf(filePath, sizeof(filePath), "resources/%s%s.png", faceStringsEnMajPourAfficher[i], couleurEnMajPourAfficher[j]); // Petite aide externe je l'avoue
             cardTextures[i][j] = LoadTexture(filePath);
         }
     }
@@ -231,16 +231,20 @@ int main(){
     while (!WindowShouldClose()) {
 
         BeginDrawing();
+		// Permet de dessiner le fond d'écran chargé préalablement
         DrawTexture(background, 0, 0, WHITE);
 
+		// Dessiner les mains des joueurs
         DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes", cardTextures);
         DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes", cardTextures);
 
+		// Analyser les mains des joueurs pour déterminer le gagnant
 		analyzeMains();
 
         EndDrawing();
     }
 
+	// Décharger les images des cartes et du fond d'écran
 	UnloadTexture(background);
 	UnloadCardTextures(cardTextures);
     CloseWindow();
