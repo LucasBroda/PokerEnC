@@ -5,6 +5,11 @@
 #include "resource_dir.h"	
 #include "raylib.h"
 
+
+// Définir la taille des cartes
+#define CARD_WIDTH 60
+#define CARD_HEIGHT 90
+
 //  Structure pour les cartes du jeu 
 struct Cartes{
     int face;
@@ -33,6 +38,14 @@ char *faceStrings[] = {
     "Dix","Valet","Reine","Roi","As"};
 char *couleurStrings[] = {
     "Coeur","Carreau","Pique","Trèfle"};
+// Ici, je fais deux tableaux contenant le nom des symboles et des valeurs en majuscules, ou avec les valeurs numériques
+// Car mes images sont nommées de la sorte (ex: 2COEUR.png, 3CARREAU.png, etc)
+const char* couleurEnMajPourAfficher[] = {
+	"COEUR", "CARREAU", "TREFLE", "PIQUE"
+};
+const char* faceStringsEnMajPourAfficher[] = {
+	"2", "3", "4", "5", "6", "7", "8", "9", "10", "VALET", "REINE", "ROI", "AS"
+};
 char *rankStrings[] = {
     "des cartes avec de hautes valeurs","une Paire","deux Paires","trois Paires","Quinte",
     "Flush","Full House","Carré","Quinte Flush"};
@@ -65,6 +78,14 @@ struct Cartes distributionCartes() {
     return cartesADistribuer;
 }
 
+// Permet de générer les mains des joueurs
+void generationsMains(){
+    //  Distribution de cinq cartes aux deux joueurs
+    for(int i=0; i<5; i++){
+        Main1.cartes[i] = distributionCartes();
+        Main2.cartes[i] = distributionCartes();
+    }
+}
 
 // Permet d'analyser les mains des joueurs pour déterminer le gagnant
 void analyzeMains() {
@@ -142,42 +163,49 @@ void analyzeMains() {
 
     // Détermine le gagnant en fonction des rangs des mains des joueurs
     if (h1Rank > h2Rank) {
+		// Permet d'afficher le joueur gagnant dans la fenêtre
 		DrawText("Le joueur 1 a gagné la partie !", 50, 450, 20, BLACK);
 	}
     else if (h2Rank > h1Rank) {
+		// Permet d'afficher le joueur gagnant dans la fenêtre
 		DrawText("Le joueur 2 a gagné la partie !", 50, 450, 20, BLACK);
 	}
     else {
+		// Permet d'afficher le joueur gagnant dans la fenêtre
 		DrawText("Egalité entre les deux joueurs !", 50, 450, 20, BLACK);
 	}
 }
 
-// Permet de générer les mains des joueurs
-void generationsMains(){
-    //  Distribution de cinq cartes aux deux joueurs
-    for(int i=0; i<5; i++){
-        Main1.cartes[i] = distributionCartes();
-        Main2.cartes[i] = distributionCartes();
+// Fonction pour charger toutes les images des cartes
+void LoadCardTextures(Texture2D cardTextures[13][4]) {
+    char filePath[50];
+    for (int i = 0; i < 13; i++) {
+        for (int j = 0; j < 4; j++) {
+            snprintf(filePath, sizeof(filePath), "resources/%s%s.png", faceStringsEnMajPourAfficher[i], couleurEnMajPourAfficher[j]);
+            cardTextures[i][j] = LoadTexture(filePath);
+        }
     }
 }
 
-void DrawCard(struct Cartes carte, int posX, int posY, Texture2D coeur, Texture2D carreau, Texture2D trefle, Texture2D pique) {
-    DrawRectangle(posX, posY, 60, 90, LIGHTGRAY);
-    DrawText(faceStrings[carte.face], posX + 5, posY + 5, 20, BLACK);
-    Texture2D symbol;
-    switch (carte.couleur) {
-        case 0: symbol = coeur; break;
-        case 1: symbol = carreau; break;
-        case 2: symbol = trefle; break;
-        case 3: symbol = pique; break;
+// Fonction pour décharger toutes les images des cartes
+void UnloadCardTextures(Texture2D cardTextures[13][4]) {
+    for (int i = 0; i < 13; i++) {
+        for (int j = 0; j < 4; j++) {
+            UnloadTexture(cardTextures[i][j]);
+        }
     }
-    DrawTextureEx(symbol, (Vector2){posX + 5, posY + 50}, 0.0f, 0.5f, WHITE); // Échelle de 0.5
 }
 
-void DrawHand(struct Main main, int posX, int posY, const char* player, Texture2D coeur, Texture2D carreau, Texture2D trefle, Texture2D pique) {
+// Fonction pour dessiner une carte
+void DrawCard(struct Cartes carte, int posX, int posY, Texture2D cardTextures[13][4]) {
+    DrawTexture(cardTextures[carte.face][carte.couleur], posX, posY, WHITE);
+}
+
+// Fonction pour dessiner la main d'un joueur
+void DrawHand(struct Main main, int posX, int posY, const char* player, Texture2D cardTextures[13][4]) {
     DrawText(player, posX, posY - 20, 20, BLACK);
     for (int i = 0; i < 5; i++) {
-        DrawCard(main.cartes[i], posX + i * 70, posY, coeur, carreau, trefle, pique);
+        DrawCard(main.cartes[i], posX + i * (CARD_WIDTH + 10), posY, cardTextures);
     }
 }
 
@@ -188,21 +216,25 @@ int main(){
 
     InitWindow(screenWidth, screenHeight, "Poker Game");
 
-	Texture2D background = LoadTexture("resources/9999520.jpg");
-	Texture2D coeur = LoadTexture("resources/Coeur.jpeg");
-	Texture2D carreau = LoadTexture("resources/Carreau.png");
-	Texture2D trefle = LoadTexture("resources/Trefle.png");
-	Texture2D pique = LoadTexture("resources/Pique.png");
+	// Permet de réinitialiser le jeu des joueurs à chaque nouvelle partie
+    srand(time(NULL));
 
-    generationsMains();
+	// Charger les images des cartes
+    Texture2D cardTextures[13][4];
+	LoadCardTextures(cardTextures);
+
+	// Permet de charger un nouveau fond d'écran pour la fenêtre
+	Texture2D background = LoadTexture("resources/9999520.jpg");
+	// Permert de générer les mains des joueurs
+	generationsMains();
 
     while (!WindowShouldClose()) {
 
         BeginDrawing();
         DrawTexture(background, 0, 0, WHITE);
 
-        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes", coeur, carreau, trefle, pique);
-        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes", coeur, carreau, trefle, pique);
+        DrawHand(Main1, 50, 100, "Le joueur 1 a les cartes suivantes", cardTextures);
+        DrawHand(Main2, 50, 300, "Le joueur 2 a les cartes suivantes", cardTextures);
 
 		analyzeMains();
 
@@ -210,10 +242,7 @@ int main(){
     }
 
 	UnloadTexture(background);
-	UnloadTexture(coeur);
-	UnloadTexture(carreau);
-	UnloadTexture(trefle);
-	UnloadTexture(pique);
+	UnloadCardTextures(cardTextures);
     CloseWindow();
 
     return 0;
